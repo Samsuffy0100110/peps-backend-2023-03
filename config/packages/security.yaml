@@ -24,9 +24,9 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
                 username_path: email
                 password_path: password
-            logout:
-                path: /api/logout
-                invalidate_session: false
+            # logout:
+            #     path: /api/logout
+            #     invalidate_session: false
         api:
             pattern:   ^/api
             stateless: true
