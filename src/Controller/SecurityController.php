@@ -77,7 +77,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route('/api/logout', name: 'api_logout', methods: ['GET'])]
+    #[Route('/api/logout', name: 'api_logout', methods: ['GET', 'POST'])]
     public function logout(): void
     {
         throw new Exception('This should never be reached!');
