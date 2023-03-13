@@ -8,8 +8,12 @@ use App\Repository\Shop\ProductRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\Table(name: 'product')]
+#[UniqueEntity('slug')]
+#[UniqueEntity('name')]
 class Product
 {
     #[ORM\Id]

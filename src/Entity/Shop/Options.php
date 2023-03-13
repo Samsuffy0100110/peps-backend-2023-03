@@ -8,8 +8,11 @@ use App\Repository\Shop\OptionsRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: OptionsRepository::class)]
+#[ORM\Table(name: 'options')]
+#[UniqueEntity('name')]
 class Options
 {
     #[ORM\Id]

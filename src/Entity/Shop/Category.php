@@ -7,8 +7,12 @@ use App\Repository\Shop\CategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Table(name: 'category')]
+#[UniqueEntity('slug')]
+#[UniqueEntity('name')]
 class Category
 {
     #[ORM\Id]
