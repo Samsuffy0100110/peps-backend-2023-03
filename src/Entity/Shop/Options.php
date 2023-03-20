@@ -2,17 +2,17 @@
 
 namespace App\Entity\Shop;
 
+use App\Entity\Shop\Product;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\Shop\OptionsRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: OptionsRepository::class)]
 #[ORM\Table(name: 'options')]
-#[UniqueEntity('name')]
+#[ORM\HasLifecycleCallbacks]
 class Options
 {
     #[ORM\Id]
@@ -49,53 +49,84 @@ class Options
         $this->products = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * @param string $name
+     * @return Options
+     */
+    public function setName(string $name): Options
     {
         $this->name = $name;
 
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    public function setQuantity(int $quantity): self
+    /**
+     * @param int $quantity
+     * @return Options
+     */
+    public function setQuantity(int $quantity): Options
     {
         $this->quantity = $quantity;
 
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCustom(): ?string
     {
         return $this->custom;
     }
 
-    public function setCustom(?string $custom): self
+    /**
+     * @param string|null $custom
+     * @return Options
+     */
+    public function setCustom(?string $custom): Options
     {
         $this->custom = $custom;
 
         return $this;
     }
 
+    /**
+     * @return float|null
+     */
     public function getPriceCustom(): ?float
     {
         return $this->priceCustom;
     }
 
-    public function setPriceCustom(?float $priceCustom): self
+    /**
+     * @param float|null $priceCustom
+     * @return Options
+     */
+    public function setPriceCustom(?float $priceCustom): Options
     {
         $this->priceCustom = $priceCustom / 100;
 
@@ -110,7 +141,11 @@ class Options
         return $this->products;
     }
 
-    public function addProduct(Product $product): self
+    /**
+     * @param Product $product
+     * @return Options
+     */
+    public function addProduct(Product $product): Options
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
@@ -119,13 +154,20 @@ class Options
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    /**
+     * @param Product $product
+     * @return Options
+     */
+    public function removeProduct(Product $product): Options
     {
         $this->products->removeElement($product);
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->name;

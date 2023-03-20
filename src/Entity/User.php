@@ -5,11 +5,14 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity('email', 'Cet email existe déjà !')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,10 +23,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(['user'])]
+    #[Assert\Email(message: 'L\'email "{{ value }}" n\'est pas valide.')]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire.')]
     private ?string $email = null;
 
     #[ORM\Column]
     #[Groups(['user'])]
+    #[Assert\NotBlank()]
     private array $roles = [];
 
     /**
@@ -31,6 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['user'])]
+    #[Assert\NotBlank()]
     private ?string $password = null;
 
     #[ORM\Column(length: 50, nullable: true)]
@@ -50,17 +57,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $city = null;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    /**
+     * @param string $email
+     * @return User
+     */
+    public function setEmail(string $email): User
     {
         $this->email = $email;
 
@@ -89,7 +106,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    /**
+     * @param array $roles
+     * @return User
+     */
+    public function setRoles(array $roles): User
     {
         $this->roles = $roles;
 
@@ -104,7 +125,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    /**
+     * @param string $password
+     * @return User
+     */
+    public function setPassword(string $password): User
     {
         $this->password = $password;
 
@@ -120,63 +145,106 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * @return string|null
+     */
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): self
+    /**
+     * @param string|null $firstName
+     * @return User
+     */
+    public function setFirstName(?string $firstName): User
     {
         $this->firstName = $firstName;
 
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(?string $lastName): self
+    /**
+     * @param string|null $lastName
+     * @return User
+     */
+    public function setLastName(?string $lastName): User
     {
         $this->lastName = $lastName;
 
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    public function setAddress(?string $address): self
+    /**
+     * @param string|null $address
+     * @return User
+     */
+    public function setAddress(?string $address): User
     {
         $this->address = $address;
 
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getZipcode(): ?string
     {
         return $this->zipcode;
     }
 
-    public function setZipcode(string $zipcode): self
+    /**
+     * @param string|null $zipcode
+     * @return User
+     */
+    public function setZipcode(?string $zipcode): User
     {
         $this->zipcode = $zipcode;
 
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getCity(): ?string
     {
         return $this->city;
     }
 
-    public function setCity(?string $city): self
+    /**
+     * @param string|null $city
+     * @return User
+     */
+    public function setCity(?string $city): User
     {
         $this->city = $city;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFullName(): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName;
     }
 }

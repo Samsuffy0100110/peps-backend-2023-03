@@ -64,11 +64,9 @@ class ProductCrudController extends AbstractCrudController
                 il est généré automatiquement à partir du nom du produit,')
                 ->hideOnIndex(),
             DateTimeField::new('releaseAt', 'Date de sortie')
-                ->setFormat('short')
-                ->setFormTypeOptions([
-                    'data' => new DateTimeImmutable('now'),
-                ])
-                ->setTimezone('Europe/Paris'),
+                ->hideOnForm(),
+            DateTimeField::new('updatedAt', 'Date de mise à jour')
+                ->hideOnForm(),
         ];
     }
 }
