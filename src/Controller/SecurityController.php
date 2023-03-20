@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/api/register', name: 'register', methods: ['POST'])]
+    #[Route('/api/register', name: 'api.register', methods: ['POST'])]
     public function create(
         Request $request,
         UserRepository $userRepository,
@@ -56,7 +56,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route('/api/login', name: 'login', methods: ['POST', 'GET'])]
+    #[Route('/api/login', name: 'api.login', methods: ['POST', 'GET'])]
     public function index(
         #[CurrentUser] ?User $user
     ): Response {
@@ -77,7 +77,7 @@ class SecurityController extends AbstractController
         );
     }
 
-    #[Route('/api/logout', name: 'api_logout', methods: ['GET', 'POST'])]
+    #[Route('/api/logout', name: 'api.logout', methods: ['GET', 'POST'])]
     public function logout(): void
     {
         throw new Exception('This should never be reached!');
