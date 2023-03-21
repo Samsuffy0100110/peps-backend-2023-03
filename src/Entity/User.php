@@ -38,23 +38,86 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['user'])]
     #[Assert\NotBlank()]
+    #[Assert\Length(
+        min: 8,
+        minMessage: 'Le mot de passe doit faire au moins {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$/',
+        message: 'Le mot de passe doit contenir au moins une minuscule,
+        une majuscule, un chiffre et un caractère spécial.'
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Groups(['user'])]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le prénom doit faire au moins {{ limit }} caractères.',
+        maxMessage: 'Le prénom doit faire au plus {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ -]+$/i',
+        message: 'Le prénom ne doit contenir que des lettres, des espaces et des tirets.'
+    )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['user'])]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Le nom doit faire au moins {{ limit }} caractères.',
+        maxMessage: 'Le nom doit faire au plus {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ -]+$/i',
+        message: 'Le nom ne doit contenir que des lettres, des espaces et des tirets.'
+    )]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user'])]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'L\'adresse doit faire au moins {{ limit }} caractères.',
+        maxMessage: 'L\'adresse doit faire au plus {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ0-9 ,.-]+$/i',
+        message: 'L\'adresse ne doit contenir que des lettres, des chiffres, des espaces, des virgules et des tirets.'
+    )]
     private ?string $address = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['user'])]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Le code postal doit faire au moins {{ limit }} caractères.',
+        maxMessage: 'Le code postal doit faire au plus {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[0-9]{5}$/',
+        message: 'Le code postal doit contenir 5 chiffres.'
+    )]
     private ?string $zipcode = null;
 
-    #[ORM\Column(length: 10, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['user'])]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'La ville doit faire au moins {{ limit }} caractères.',
+        maxMessage: 'La ville doit faire au plus {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-ZÀ-ÿ0-9 -]+$/i',
+        message: 'La ville ne doit contenir que des lettres et des chiffres,
+        des espaces et des tirets.'
+    )]
     private ?string $city = null;
 
     /**
