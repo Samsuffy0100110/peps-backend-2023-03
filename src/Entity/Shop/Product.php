@@ -33,6 +33,10 @@ class Product
     #[Assert\NotBlank(message: 'Le nom du produit est obligatoire.')]
     private string $name;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['product'])]
+    private ?string $description = null;
+
     #[ORM\Column(nullable: true)]
     #[Groups(['product'])]
     #[Assert\NotBlank(message: 'Le prix du produit est obligatoire.')]
@@ -47,10 +51,6 @@ class Product
     #[Assert\NotBlank(message: 'Le slug du produit est obligatoire.')]
     private string $slug;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['product'])]
-    private ?string $description = null;
-
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['product'])]
     #[Assert\NotNull]
@@ -62,6 +62,7 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['product'])]
     private ?Category $category = null;
 
     #[ORM\OneToMany(
@@ -94,6 +95,14 @@ class Product
     {
         $this->updatedAt = new DateTimeImmutable();
     }
+    // function for delete image when delete product from easy admin
+    #[ORM\PostRemove]
+    public function postRemove(): void
+    {
+        if ($this->image) {
+            unlink('images/products/' . $this->image);
+        }
+    }
 
     /**
      * @return int|null
@@ -118,6 +127,25 @@ class Product
     public function setName(string $name): Product
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return Product
+     */
+    public function setDescription(?string $description): Product
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -180,25 +208,6 @@ class Product
     }
 
     /**
-     * @return Category|null
-     */
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category|null $category
-     * @return Product
-     */
-    public function setCategory(?Category $category): Product
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    /**
      * @return DateTimeImmutable
      */
     public function getReleaseAt(): DateTimeImmutable
@@ -236,20 +245,20 @@ class Product
     }
 
     /**
-     * @return string|null
+     * @return Category|null
      */
-    public function getDescription(): ?string
+    public function getCategory(): ?Category
     {
-        return $this->description;
+        return $this->category;
     }
 
     /**
-     * @param string|null $description
+     * @param Category|null $category
      * @return Product
      */
-    public function setDescription(?string $description): Product
+    public function setCategory(?Category $category): Product
     {
-        $this->description = $description;
+        $this->category = $category;
 
         return $this;
     }

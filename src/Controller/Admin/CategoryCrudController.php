@@ -30,18 +30,17 @@ class CategoryCrudController extends AbstractCrudController
         return [
             TextField::new('name', 'Nom')
                 ->setRequired(true),
+            SlugField::new('slug', 'Slug')
+                ->setTargetFieldName('name')
+                ->setHelp('Le slug est le nom qui apparaîtra dans la barre de navigation, 
+                il est généré automatiquement à partir du nom de la catégorie,')
+                ->hideOnIndex(),
             ImageField::new('image', 'Image')
                 ->setBasePath('/images/categories')
                 ->setUploadDir('public/images/categories')
                 ->setUploadedFileNamePattern('[randomhash].[extension]')
                 ->setRequired(false)
                 ->setLabel('Image'),
-            SlugField::new('slug')
-                ->setTargetFieldName('name')
-                ->setLabel('Slug')
-                ->setHelp('Le slug est le nom qui apparaîtra dans la barre de navigation, 
-                il est généré automatiquement à partir du nom de la catégorie,')
-                ->hideOnIndex(),
         ];
     }
 }

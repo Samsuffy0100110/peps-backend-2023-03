@@ -2,9 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use DateTimeImmutable;
 use App\Entity\Shop\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
@@ -35,38 +35,42 @@ class ProductCrudController extends AbstractCrudController
     {
         return [
             AssociationField::new('category', 'Catégorie')
-            ->setCrudController(CategoryCrudController::class)
-            ->setFormTypeOption('choice_label', function ($category) {
-                return $category->getName();
-            }),
+                ->setCrudController(CategoryCrudController::class)
+                ->setFormTypeOption('choice_label', function ($category) {
+                    return $category->getName();
+                }),
             TextField::new('name', 'Nom')
                 ->setRequired(true),
             TextareaField::new('description', 'Description')
                 ->setRequired(false),
-            MoneyField::new('price')
-                    ->setLabel('Prix')
-                    ->setCurrency('EUR'),
+            MoneyField::new('price', 'Prix')
+                ->setCurrency('EUR')
+                ->setRequired(true),
             ImageField::new('image', 'Image Principale')
                 ->setBasePath('/images/products')
                 ->setUploadDir('public/images/products')
                 ->setUploadedFileNamePattern('[randomhash].[extension]')
                 ->setRequired(false)
-                ->setLabel('Image'),
+                ->setHelp('Ceci est l\'image principale de votre produit,
+                si vous ne souhaitez pas en mettre une, une image par défaut sera utilisée'),
             CollectionField::new('imagesProducts', 'Autres Images')
                 ->useEntryCrudForm()
                 ->setHelp('Vous pouvez ajouter des images supplémentaires pour votre produit'),
             CollectionField::new('options', 'Options')
                 ->useEntryCrudForm(),
-            SlugField::new('slug')
+            SlugField::new('slug', 'Slug')
                 ->setTargetFieldName('name')
-                ->setLabel('Slug')
                 ->setHelp('Le slug est le nom qui apparaîtra dans la barre de navigation, 
                 il est généré automatiquement à partir du nom du produit,')
                 ->hideOnIndex(),
-            DateTimeField::new('releaseAt', 'Date de sortie')
-                ->hideOnForm(),
+            DateField::new('releaseAt', 'Date de sortie')
+                ->hideOnForm()
+                ->setFormat('dd-MM-Y à HH:mm')
+                ->setTimezone('Europe/Paris'),
             DateTimeField::new('updatedAt', 'Date de mise à jour')
-                ->hideOnForm(),
+                ->hideOnForm()
+                ->setFormat('dd-MM-Y à HH:mm')
+                ->setTimezone('Europe/Paris'),
         ];
     }
 }

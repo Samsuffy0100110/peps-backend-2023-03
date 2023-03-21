@@ -18,13 +18,11 @@ class OptionsCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('name', 'Nom')
-                ->setRequired(true),
-            IntegerField::new('quantity', 'Quantité')
-                ->setRequired(true),
+            TextField::new('name', 'Nom'),
+            IntegerField::new('quantity', 'Quantité'),
             MoneyField::new('priceCustom', 'Prix')
                 ->setCurrency('EUR')
-                ->setRequired(true),
+                ->setHelp('Ceci est le prix de la personnalisation de l\option de votre produit'),
         ];
     }
 }

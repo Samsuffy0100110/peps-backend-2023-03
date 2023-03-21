@@ -39,6 +39,14 @@ class ImagesProduct
     {
         $this->updatedAt = new DateTimeImmutable();
     }
+    // function for delete image when delete product from easy admin
+    #[ORM\PostRemove]
+    public function postRemove(): void
+    {
+        if ($this->name) {
+            unlink('images/products/' . $this->name);
+        }
+    }
 
     /**
      * @return int|null

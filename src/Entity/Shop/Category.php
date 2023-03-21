@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: 'category')]
 #[UniqueEntity('slug')]
 #[UniqueEntity('name')]
@@ -41,7 +42,11 @@ class Category
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $updatedAt;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
+    #[ORM\OneToMany(
+        mappedBy: 'category',
+        targetEntity: Product::class,
+        cascade: ['persist', 'remove']
+    )]
     private Collection $products;
 
     public function __construct()
@@ -54,6 +59,14 @@ class Category
     public function preUpdate(): void
     {
         $this->updatedAt = new DateTimeImmutable();
+    }
+    // function for delete image when delete category from easy admin
+    #[ORM\PostRemove]
+    public function postRemove(): void
+    {
+        if ($this->image) {
+            unlink('images/categories/' . $this->image);
+        }
     }
 
     /**
