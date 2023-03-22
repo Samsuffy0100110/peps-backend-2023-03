@@ -5,6 +5,7 @@ namespace App\Controller;
 use Exception;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\SecurityAuthenticator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class SecurityController extends AbstractController
 {
@@ -23,7 +25,9 @@ class SecurityController extends AbstractController
         UserRepository $userRepository,
         SerializerInterface $serializer,
         UrlGeneratorInterface $urlGenerator,
-        UserPasswordHasherInterface $passwordHasher
+        SecurityAuthenticator $authenticator,
+        UserPasswordHasherInterface $passwordHasher,
+        UserAuthenticatorInterface $userAuthenticator
     ): JsonResponse {
 
         $user = new User();
@@ -47,6 +51,8 @@ class SecurityController extends AbstractController
             ['id' => $user->getId()],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        $userAuthenticator->authenticateUser($user, $authenticator, $request);
 
         return new JsonResponse(
             $jsonUser,
