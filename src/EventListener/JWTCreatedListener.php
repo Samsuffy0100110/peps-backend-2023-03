@@ -10,7 +10,7 @@ class JWTCreatedListener
     /**
      * @var RequestStack
      */
-    private RequestStack $requestStack;
+    private $requestStack;
 
     /**
      * @param RequestStack $requestStack
@@ -25,13 +25,15 @@ class JWTCreatedListener
      *
      * @return void
      */
-    public function onJWTCreated(JWTCreatedEvent $event): void
+    public function onJWTCreated(JWTCreatedEvent $event)
     {
-        $request = $this->requestStack->getCurrentRequest();
 
         $payload = $event->getData();
-        $payload['ip'] = $request->getClientIp();
-
+        $payload["id"] = $event->getUser()->getId();
         $event->setData($payload);
+
+        $header = $event->getHeader();
+
+        $event->setHeader($header);
     }
 }
